@@ -7,6 +7,7 @@
 #include "Mover.generated.h"
 
 
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DUNGEONESCAPE_API UMover : public UActorComponent
 {
@@ -23,7 +24,17 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-private:
 	FVector StartLocation;
+	
+	UPROPERTY(EditAnywhere)
+	FVector MoveOffset;
+
+	UPROPERTY(EditAnywhere)
+	float MoveTime = 4.0f;
+
+	UPROPERTY(EditAnywhere)
+	bool ShouldMove = false;
+	
+	FVector TargetLocation;
 		
 };
