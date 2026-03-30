@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
+#include "Mover.h"
+
 #include "TriggerComponent.generated.h"
 
 /**
@@ -14,9 +16,9 @@ class DUNGEONESCAPE_API UTriggerComponent : public UBoxComponent
 {
 	GENERATED_BODY()
 	
-//public:
+public:
 //	// Sets default values for this component's properties
-//	UTriggerComponent();
+	UTriggerComponent();
 
 
 protected:
@@ -26,4 +28,19 @@ protected:
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UPROPERTY(EditAnywhere)
+	AActor* MoverActor;
+
+	UPROPERTY(VisibleAnywhere)
+	UMover* Mover;
+
+	UPROPERTY(EditAnywhere)
+	bool IsPressurePlate = false;
+
 };
