@@ -39,6 +39,9 @@ public:
 	AActor* MoverActor;
 
 	UPROPERTY(VisibleAnywhere)
+	uint32 ActivatorCount = 0;
+
+	UPROPERTY(VisibleAnywhere)
 	UMover* Mover;
 
 	UPROPERTY(EditAnywhere)

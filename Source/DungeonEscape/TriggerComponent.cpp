@@ -42,7 +42,7 @@ void UTriggerComponent::Trigger(bool NewTriggerValue)
 {
 	IsTriggered = NewTriggerValue;
 	if (Mover) {
-		Mover->ShouldMove = IsTriggered;
+		Mover->SetShouldMove(IsTriggered);
 	}
 	else {
 		UE_LOG(LogTemp, Display, TEXT("%s doesn't have a Mover to trigger!"), *GetOwner()->GetActorNameOrLabel());
@@ -55,8 +55,11 @@ void UTriggerComponent::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp
 	UE_LOG(LogTemp, Display, TEXT("Overlap Begin!"));
 
 	if (OtherActor && OtherActor->Tags.Contains("PressurePlateActivator") && Mover) {
-		if(!IsTriggered)
+		ActivatorCount++;
+
+		if (!IsTriggered) {
 			Trigger(true);
+		}
 	}
 }
 
@@ -65,7 +68,10 @@ void UTriggerComponent::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, 
 	UE_LOG(LogTemp, Display, TEXT("Overlap End!"));
 
 	if (OtherActor && OtherActor->Tags.Contains("PressurePlateActivator") && Mover) {
-		if (IsTriggered)
+		ActivatorCount--;
+
+		if (IsTriggered && !ActivatorCount) {
 			Trigger(false);
+		}
 	}
 }

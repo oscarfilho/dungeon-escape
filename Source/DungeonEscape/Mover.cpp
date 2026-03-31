@@ -10,7 +10,6 @@ UMover::UMover()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 	// ...
 }
 
@@ -22,6 +21,7 @@ void UMover::BeginPlay()
 
 	AActor* MyOwner = GetOwner();
 	StartLocation = MyOwner->GetActorLocation();
+	SetShouldMove(false);
 	//UE_LOG(LogTemp, Display, TEXT("Start Location: %s, Target Location: %s"), *StartLocation.ToCompactString(), *TargetLocation.ToCompactString());
 }
 
@@ -30,15 +30,6 @@ void UMover::BeginPlay()
 void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	
-	if (ShouldMove)
-	{
-		TargetLocation = StartLocation + MoveOffset;
-	}
-	else {
-		TargetLocation = StartLocation;
-	}
 
 	FVector CurrentLocation = GetOwner()->GetActorLocation();
 	ReachedTarget = CurrentLocation.Equals(TargetLocation, 1.0f);
@@ -52,3 +43,20 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 	}
 }
 
+bool UMover::GetShouldMove()
+{
+	return ShouldMove;
+}
+
+void UMover::SetShouldMove(bool NewShouldMove)
+{
+	ShouldMove = NewShouldMove;
+
+	if (ShouldMove)
+	{
+		TargetLocation = StartLocation + MoveOffset;
+	}
+	else {
+		TargetLocation = StartLocation;
+	}
+}
