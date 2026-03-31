@@ -21,12 +21,8 @@ void UMover::BeginPlay()
 	Super::BeginPlay();
 
 	AActor* MyOwner = GetOwner();
-	UE_LOG(LogTemp, Display, TEXT("My Owner called name is: %s"), *MyOwner->GetActorNameOrLabel());
 	StartLocation = MyOwner->GetActorLocation();
-
-	
-	UE_LOG(LogTemp, Display, TEXT("%s is located at: %s"), *MyOwner->GetActorNameOrLabel(), *StartLocation.ToCompactString());
-	UE_LOG(LogTemp, Display, TEXT("Start Location: %s, Target Location: %s"), *StartLocation.ToCompactString(), *TargetLocation.ToCompactString());
+	//UE_LOG(LogTemp, Display, TEXT("Start Location: %s, Target Location: %s"), *StartLocation.ToCompactString(), *TargetLocation.ToCompactString());
 }
 
 
@@ -52,10 +48,7 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 		float Speed = MoveOffset.Length() / MoveTime;
 		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
 		GetOwner()->SetActorLocation(NewLocation);
-		UE_LOG(LogTemp, Display, TEXT("%s is moving!"), *GetOwner()->GetActorNameOrLabel());
-	}
-	else {
-		UE_LOG(LogTemp, Display, TEXT("%s has reached the target location!"), *GetOwner()->GetActorNameOrLabel());
+		//UE_LOG(LogTemp, Display, TEXT("%s is moving!"), *GetOwner()->GetActorNameOrLabel());
 	}
 }
 

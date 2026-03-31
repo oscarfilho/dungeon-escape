@@ -38,17 +38,34 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
+void UTriggerComponent::Trigger(bool NewTriggerValue)
+{
+	IsTriggered = NewTriggerValue;
+	if (Mover) {
+		Mover->ShouldMove = IsTriggered;
+	}
+	else {
+		UE_LOG(LogTemp, Display, TEXT("%s doesn't have a Mover to trigger!"), *GetOwner()->GetActorNameOrLabel());
+	}
+}
+
 
 void UTriggerComponent::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Display, TEXT("Overlap Begin!"));
-	if(Mover)
-		Mover->ShouldMove = true;
+
+	if (OtherActor && OtherActor->Tags.Contains("PressurePlateActivator") && Mover) {
+		if(!IsTriggered)
+			Trigger(true);
+	}
 }
 
 void UTriggerComponent::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogTemp, Display, TEXT("Overlap End!"));
-	if(Mover)
-		Mover->ShouldMove = false;
+
+	if (OtherActor && OtherActor->Tags.Contains("PressurePlateActivator") && Mover) {
+		if (IsTriggered)
+			Trigger(false);
+	}
 }
