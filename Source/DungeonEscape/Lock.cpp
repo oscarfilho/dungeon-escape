@@ -6,7 +6,7 @@
 // Sets default values
 ALock::ALock()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	Tags.Add("Lock");
 
@@ -24,7 +24,8 @@ ALock::ALock()
 void ALock::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SetIsKeyPlaced(true);
+
 }
 
 // Called every frame
@@ -34,3 +35,14 @@ void ALock::Tick(float DeltaTime)
 
 }
 
+void ALock::SetIsKeyPlaced(bool NewIsKeyPlaced)
+{
+	IsKeyPlaced = NewIsKeyPlaced;
+	TriggerComp->Trigger(NewIsKeyPlaced);
+	KeyItemMesh->SetVisibility(NewIsKeyPlaced);
+}
+
+bool ALock::GetIsKeyPlaced()
+{
+	return IsKeyPlaced;
+}
