@@ -14,7 +14,7 @@ ADungeonEscapeCharacter::ADungeonEscapeCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
-	
+
 	// Create the first person mesh that will be viewed only by this character's owner
 	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("First Person Mesh"));
 
@@ -45,7 +45,7 @@ ADungeonEscapeCharacter::ADungeonEscapeCharacter()
 }
 
 void ADungeonEscapeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{	
+{
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
@@ -126,4 +126,44 @@ void ADungeonEscapeCharacter::DoInteract()
 {
 	// Log a message when Interact is triggered
 	UE_LOG(LogTemp, Warning, TEXT("Interact action triggered in %s"), *GetNameSafe(this));
+
+	FVector StartLocation = GetFirstPersonCameraComponent()->GetComponentLocation();
+	FVector CameraDirection = GetFirstPersonCameraComponent()->GetForwardVector();
+
+	FVector EndLocation = StartLocation + (CameraDirection * MaxInteractionDistance);
+
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Green, false, 5.0f);
+	FCollisionShape InteractionSphere = FCollisionShape::MakeSphere(InteractionSphereRadius);
+	DrawDebugSphere(GetWorld(), StartLocation, InteractionSphereRadius, 12, FColor::Red, false, 5.0f);
+	DrawDebugSphere(GetWorld(), EndLocation, InteractionSphereRadius, 12, FColor::Red, false, 5.0f);
+
+	FHitResult HitResult;
+	bool HasHit = GetWorld()->SweepSingleByChannel(
+					HitResult,
+					StartLocation,
+					EndLocation,
+					FQuat::Identity,
+					ECC_GameTraceChannel2,
+					InteractionSphere
+				);
+	if (HasHit) {
+		AActor* HitActor = HitResult.GetActor();
+		UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *HitActor->GetActorNameOrLabel());
+	}
+	else {
+		UE_LOG(LogTemp, Display, TEXT("Not hit anything!"));
+	}
+	/*FVector OriginalVector = FVector(1.0f, 2.0f, 3.0f);
+
+	UE_LOG(LogTemp, Display, TEXT("Original Vector: %s"), *OriginalVector.ToCompactString());
+	TestVector(OriginalVector);
+	UE_LOG(LogTemp, Display, TEXT("Modified Vector: %s"), *OriginalVector.ToCompactString());*/
+
+
+
+}
+
+void ADungeonEscapeCharacter::TestVector(FVector& OutVector)
+{
+	OutVector = FVector(1001.0f, 1042.0f, 1542.0f);
 }

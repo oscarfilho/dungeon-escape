@@ -36,6 +36,8 @@ void UTriggerComponent::BeginPlay()
 void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	//UE_LOG(LogTemp, Display, TEXT("Seconds since begin play: %.3f"), GetWorld()->TimeSeconds);
 }
 
 void UTriggerComponent::Trigger(bool NewTriggerValue)
