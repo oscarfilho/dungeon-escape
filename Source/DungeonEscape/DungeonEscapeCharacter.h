@@ -107,5 +107,9 @@ public:
 	float InteractionSphereRadius = 30.0f;
 
 	void TestVector(FVector& OutVector);
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	TArray<FString> Inventory;
 };
 

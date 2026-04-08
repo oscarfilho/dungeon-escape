@@ -9,6 +9,8 @@
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "DungeonEscape.h"
+#include <CollectableItem.h>
+#include <Lock.h>
 
 ADungeonEscapeCharacter::ADungeonEscapeCharacter()
 {
@@ -148,7 +150,40 @@ void ADungeonEscapeCharacter::DoInteract()
 				);
 	if (HasHit) {
 		AActor* HitActor = HitResult.GetActor();
-		UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *HitActor->GetActorNameOrLabel());
+
+		
+
+		if (HitActor->ActorHasTag("CollectableItem")) {
+			ACollectableItem* CollectableItem = Cast<ACollectableItem>(HitActor);
+
+			if (CollectableItem) {
+				Inventory.Add(*CollectableItem->ItemName);
+				CollectableItem->Destroy();
+			}
+		}
+		else if (HitActor->ActorHasTag("Lock")) {
+			ALock* Lock = Cast<ALock>(HitActor);
+
+			if(Lock){
+				if (!Lock->GetIsKeyPlaced() && Inventory.Contains(Lock->KeyItemName)) {
+					
+					int32 ItemsRemoved = Inventory.RemoveSingle(Lock->KeyItemName);
+					UE_LOG(LogTemp, Display, TEXT("Items removed count: %d"), ItemsRemoved);
+
+					if (ItemsRemoved) {
+						Lock->SetIsKeyPlaced(true);
+						Lock->Destroy();
+					}
+					else {
+						UE_LOG(LogTemp, Warning, TEXT("Item doesn't exist in inventory!"));
+					}
+
+					UE_LOG(LogTemp, Display, TEXT("Placed %s in %s!"), *Lock->KeyItemName, *Lock->GetActorNameOrLabel());
+				}
+
+			}
+		}
+		//UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *HitActor->GetActorNameOrLabel());
 	}
 	else {
 		UE_LOG(LogTemp, Display, TEXT("Not hit anything!"));
