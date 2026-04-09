@@ -172,13 +172,19 @@ void ADungeonEscapeCharacter::DoInteract()
 
 					if (ItemsRemoved) {
 						Lock->SetIsKeyPlaced(true);
-						Lock->Destroy();
+						//Lock->Destroy();
 					}
 					else {
 						UE_LOG(LogTemp, Warning, TEXT("Item doesn't exist in inventory!"));
 					}
 
 					UE_LOG(LogTemp, Display, TEXT("Placed %s in %s!"), *Lock->KeyItemName, *Lock->GetActorNameOrLabel());
+				}
+				else{
+					UE_LOG(LogTemp, Warning, TEXT("Getting back the item to the inventory!"));
+
+					Inventory.Add(Lock->KeyItemName);
+					Lock->SetIsKeyPlaced(false);
 				}
 
 			}
