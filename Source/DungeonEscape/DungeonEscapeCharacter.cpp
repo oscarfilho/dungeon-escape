@@ -151,12 +151,11 @@ void ADungeonEscapeCharacter::DoInteract()
 	if (HasHit) {
 		AActor* HitActor = HitResult.GetActor();
 
-		
-
 		if (HitActor->ActorHasTag("CollectableItem")) {
 			ACollectableItem* CollectableItem = Cast<ACollectableItem>(HitActor);
 
 			if (CollectableItem) {
+				UE_LOG(LogTemp, Warning, TEXT("Item Collectable Item collected: %s"), *CollectableItem->GetActorNameOrLabel());
 				Inventory.Add(*CollectableItem->ItemName);
 				CollectableItem->Destroy();
 			}
@@ -165,26 +164,30 @@ void ADungeonEscapeCharacter::DoInteract()
 			ALock* Lock = Cast<ALock>(HitActor);
 
 			if(Lock){
+				UE_LOG(LogTemp, Warning, TEXT("Interacted with Lock: %s"), *Lock->GetActorNameOrLabel());
+				UE_LOG(LogTemp, Warning, TEXT("This lock has a key item named: %s"), *Lock->KeyItemName);
+
 				if (!Lock->GetIsKeyPlaced() && Inventory.Contains(Lock->KeyItemName)) {
-					
+					UE_LOG(LogTemp, Warning, TEXT("AQUI KARALHO! Inventory contains the key item."));
 					int32 ItemsRemoved = Inventory.RemoveSingle(Lock->KeyItemName);
+					
 					UE_LOG(LogTemp, Display, TEXT("Items removed count: %d"), ItemsRemoved);
 
 					if (ItemsRemoved) {
 						Lock->SetIsKeyPlaced(true);
 						//Lock->Destroy();
 					}
-					else {
-						UE_LOG(LogTemp, Warning, TEXT("Item doesn't exist in inventory!"));
-					}
 
 					UE_LOG(LogTemp, Display, TEXT("Placed %s in %s!"), *Lock->KeyItemName, *Lock->GetActorNameOrLabel());
 				}
-				else{
+				else if(Lock->GetIsKeyPlaced() && Inventory.Contains(Lock->KeyItemName)){
 					UE_LOG(LogTemp, Warning, TEXT("Getting back the item to the inventory!"));
 
 					Inventory.Add(Lock->KeyItemName);
 					Lock->SetIsKeyPlaced(false);
+				}
+				else {
+					UE_LOG(LogTemp, Warning, TEXT("Item doesn't exist in inventory!"));
 				}
 
 			}
